@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vue Product Catalog</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://unpkg.com/vue-router@4"></script>
+</head>
+<body>
+  <div id="app">
+    <h2>📦 Product Catalog</h2>
+    <nav>
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </nav>
+    <hr />
+    <router-view></router-view>
+  </div>
+
+  <script>
+    const { createApp, ref } = Vue;
+    const { createRouter, createWebHistory, useRoute } = VueRouter;
+
+    // ✅ Data produk dibuat reactive pakai ref
+    const products = ref([
+      { id: 1, name: "Laptop", price: 10000 },
+      { id: 2, name: "Smartphone", price: 5000 },
+      { id: 3, name: "Headphone", price: 1500 }
+    ]);
+
+    // ✅ Komponen Home - daftar produk
+    const Home = {
+      template: `
+        <div>
+          <h3>Daftar Produk</h3>
+          <ul>
+            <li v-for="product in products" :key="product.id">
+              <router-link :to="'/product/' + product.id">
+                {{ product.name }}
+              </router-link>
+            </li>
+          </ul>
+        </div>
+      `,
+      setup() {
+        return { products };
+      }
+    };
+
+    // ✅ Komponen Detail Produk
+    const ProductDetail = {
+      template: `
+        <div v-if="product">
+          <h3>Detail Produk</h3>
+          <p><strong>Nama:</strong> {{ product.name }}</p>
+          <p><strong>Harga:</strong> Rp{{ product.price }}</p>
+          <router-link to="/">← Kembali</router-link>
+        </div>
+        <div v-else>
+          <p>Produk tidak ditemukan.</p>
+          <router-link to="/">← Kembali</router-link>
+        </div>
+      `,
+      setup() {
+        const route = useRoute();
+        const productId = parseInt(route.params.id);
+        const product = products.value.find(p => p.id === productId);
+        return { product };
+      }
+    };
+
+    // ✅ Komponen About
+    const About = {
+      template: `
+        <div>
+          <h3>Tentang Aplikasi</h3>
+          <p>Project Vue Router oleh kamu 😎</p>
+        </div>
+      `
+    };
+
+    // ✅ Setup Vue Router
+    const routes = [
+      { path: '/', component: Home },
+      { path: '/about', component: About },
+      { path: '/product/:id', component: ProductDetail }
+    ];
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes
+    });
+
+    // ✅ Mount ke Vue App
+    createApp({}).use(router).mount('#app');
+  </script>
+</body>
+</html>

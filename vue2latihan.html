@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<h1>Tambah Tugas Baru</h1>
+    <div id="manage">
+        <ul>
+            <li v-for="(item,index) in activeItems" :key="index" style="list-style-type: none;">
+                {{ item.text }}
+                <span v-if="item.done">✔️</span>
+                <button @click="selesai(index)">selesai</button>
+                <button @click="hapus(index)">hapus</button> <!-- ini yang bener -->
+              </li>              
+        </ul>
+        <input v-model="data" placeholder="masukkan data">
+        <button @click="add">Add</button>
+        <p>Tugas selesai: {{doneCompute}} dari {{notDoneCompute}}</p>
+    </div>
+    <script>            
+        const {createApp}=Vue;
+        createApp({
+            data() {
+            return {
+                items: [
+                { text: "CSS", done: false, hapus: false },
+                { text: "JS", done: false, hapus: false }
+                ],
+                data:"",
+            };
+            },
+            methods: {
+            selesai(index) {
+                this.items[index].done = true;
+            },
+            hapus(index) {
+                this.items.pop()
+            },
+            add(){
+                if (this.data !=""){
+                    this.items.push({
+                        text:this.data,
+                        done:false,
+                        hapus:false
+                    })
+                }
+                this.data=""
+            }
+            },
+            computed:{
+                activeItems(){
+                    return this.items.filter(item=>!item.hapus);
+                },
+                doneCompute(){
+                    return this.items.filter(item=>!item.done).length
+                },
+                notDoneCompute(){
+                    return this.items.length
+                }
+            }
+        }).mount('#manage');
+    </script>
+</body>
+</html>

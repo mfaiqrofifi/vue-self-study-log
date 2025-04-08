@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <ul id="App">
+        <li v-for="(item,index) in items" :key="index">
+            {{item}}
+        </li>
+    </ul>
+    <script>
+        const {createApp}=Vue;
+        createApp({
+            data(){
+                return{
+                    items:["belajar","tidur"]
+                }
+            }
+        }).mount("#App")
+    </script>
+</body>
+</html>

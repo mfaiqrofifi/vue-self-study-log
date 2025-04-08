@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<h1>Tambah Tugas Baru</h1>
+    <div id="manage">
+        <ul>
+            <todo-items 
+            v-for="(tugas,index) in activeItems"
+            :key="index"
+            :index="index"
+            :tugas="tugas"
+            @hapus="hapus">
+            </todo-items>     
+        </ul>
+        <input v-model="data" placeholder="masukkan data">
+        <button @click="add">Add</button>
+        <p>Tugas selesai: {{doneCompute}} dari {{notDoneCompute}}</p>
+    </div>
+    <script>            
+        const {createApp}=Vue;
+        const TodoItems={
+            props:['tugas', 'index'],
+            template:`
+                <li>
+                {{tugas.text}}
+                    <button @click="$emit('hapus', index)">hapus</button>
+                </li>
+            `
+        }
+        createApp({
+            components:{
+                'todo-items':TodoItems
+            },
+            data() {
+            return {
+                items: [
+                { text: "CSS", done: false, hapus: false },
+                { text: "JS", done: false, hapus: false }
+                ],
+                data:"",
+            };
+            },
+            methods: {
+            selesai(index) {
+                this.items[index].done = true;
+            },
+            hapus(index) {
+                this.items.pop()
+            },
+            add(){
+                if (this.data !=""){
+                    this.items.push({
+                        text:this.data,
+                        done:false,
+                        hapus:false
+                    })
+                }
+                this.data=""
+            }
+            },
+            computed:{
+                activeItems(){
+                    return this.items.filter(item=>!item.hapus);
+                },
+                doneCompute(){
+                    return this.items.filter(item=>!item.done).length
+                },
+                notDoneCompute(){
+                    return this.items.length
+                }
+            }
+        }).mount('#manage');
+    </script>
+</body>
+</html>
